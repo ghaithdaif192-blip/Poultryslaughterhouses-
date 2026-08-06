@@ -451,7 +451,7 @@ fun PoultryProAppContent(viewModel: GreetingViewModel, colors: IndustrialColors)
                                 }
                             }
 
-                            Divider(color = colors.border, thickness = 1.dp, modifier = Modifier.padding(bottom = 16.dp))
+                            HorizontalDivider(color = colors.border, thickness = 1.dp, modifier = Modifier.padding(bottom = 16.dp))
 
                             val navTabs = listOf("Dashboard", "Reception", "Batch Tracker", "Production", "Quality Control", "Inventory", "AI Analytics")
                             navTabs.forEach { tabKey ->
@@ -503,7 +503,7 @@ fun PoultryProAppContent(viewModel: GreetingViewModel, colors: IndustrialColors)
                         }
 
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Divider(color = colors.border, thickness = 1.dp)
+                            HorizontalDivider(color = colors.border, thickness = 1.dp)
                             
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -1204,7 +1204,7 @@ fun TrackerModule(viewModel: GreetingViewModel, colors: IndustrialColors, isArab
                             }
                         }
 
-                        Divider(color = colors.border)
+                        HorizontalDivider(color = colors.border)
 
                         val currentIdx = stages.indexOf(batch.currentStage)
                         Row(
