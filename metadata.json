@@ -1,0 +1,6 @@
+{
+  "name": "Greeting & Wisdom Generator",
+  "description": "A beautifully designed greeting and daily wisdom generator powered by Gemini AI with local database saving.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

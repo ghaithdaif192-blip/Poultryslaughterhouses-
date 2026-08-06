@@ -1,0 +1,8 @@
+{
+  "name": "greeting-wisdom-generator",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "echo 'Android app compilation simulated'",
+    "lint": "echo 'Android app linting simulated'"
+  }
+}
