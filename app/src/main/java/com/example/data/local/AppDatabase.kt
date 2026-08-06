@@ -4,9 +4,21 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.data.model.SavedQuote
+import com.example.data.model.ColdStorageLocation
+import com.example.data.model.PoultryBatch
+import com.example.data.model.ProductionLine
+import com.example.data.model.QCEntry
 
-@Database(entities = [SavedQuote::class], version = 1, exportSchema = false)
+@Database(
+    entities = [
+        PoultryBatch::class,
+        QCEntry::class,
+        ProductionLine::class,
+        ColdStorageLocation::class
+    ],
+    version = 1,
+    exportSchema = false
+)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun quoteDao(): QuoteDao
 
@@ -19,8 +31,10 @@ abstract class AppDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "aura_quotes_database"
-                ).build()
+                    "poultry_pro_erp_database"
+                )
+                .fallbackToDestructiveMigration()
+                .build()
                 INSTANCE = instance
                 instance
             }
