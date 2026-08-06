@@ -1,0 +1,53 @@
+name: Build & Publish Release with Gemini AI
+
+on:
+  push:
+    tags:
+      - 'v*' # يشتغل التدفّق تلقائياً عند رفع tag مثل v1.0.0
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Grant Execute Permission for Gradle
+        run: chmod +x gradlew
+
+      - name: Build Android APK
+        run: ./gradlew assembleRelease
+
+      - name: Generate Release Notes via AI Studio (Gemini)
+        id: gemini_notes
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          COMMITS=$(git log $(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || git rev-list --max-parents=0 HEAD)..HEAD --oneline)
+          
+          PROMPT="قم بكتابة Release Notes أكاديمية ومنظمة باللغة العربية والإنجليزية لتطبيق جوال بناءً على التغييرات التالية، واشرح للباحثين ما الجديد في هذا الإصدار: $COMMITS"
+          
+          RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d "{\"contents\": [{\"parts\": [{\"text\": \"$PROMPT\"}]}]}")
+          
+          NOTES=$(echo "$RESPONSE" | jq -r '.candidates[0].content.parts[0].text // "إصدار جديد مع تحسينات في الأداء والتحديثات البرمجية."')
+          echo "NOTES<<EOF" >> $GITHUB_ENV
+          echo "$NOTES" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Create GitHub Release & Upload APK
+        uses: softprops/action-gh-release@v1
+        with:
+          body: ${{ env.NOTES }}
+          files: app/build/outputs/apk/release/app-release.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
